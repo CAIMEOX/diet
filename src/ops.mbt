@@ -161,33 +161,39 @@ pub fn add[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
 }
 
 ///|
-pub fn until[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
+pub fn remove[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
   match self {
     Empty => Empty
-    Node(min=v1, max=v2, left=s0, right=s1, ..) => {
-      if n > v2 {
-        make_node(v1, v2, s0, s1.until(n))
-      } else if n < v1 {
-        s0.until(n)
+    Node(min=v1, max=v2, left=s1, right=s2, ..) =>
+      if n < v1 {
+        make_node(v1, v2, s1.remove(n), s2)
+      } else if n == v1 {
+        if v1 == v2 {
+          concat(s1, s2)
+        } else {
+          make_node(N::succ(v1), v2, s1, s2)
+        }
+      } else if n > v1 && n < v2 {
+        let left_part = make_node(v1, N::pred(n), s1, Empty)
+        let right_part = make_node(N::succ(n), v2, Empty, s2)
+        concat(left_part, right_part)
+      } else if n == v2 {
+        make_node(v1, N::pred(v2), s1, s2)
       } else {
-        make_node(v1, n, s0, Empty)
+        make_node(v1, v2, s1, s2.remove(n))
       }
-    }
   }
 }
 
 ///|
-pub fn from[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
-  match self {
-    Empty => Empty
-    Node(min=v1, max=v2, left=s0, right=s1, ..) => {
-      if n < v1 {
-        make_node(v1, v2, s0.from(n), s1)
-      } else if n > v2 {
-        s1.from(n)
-      } else {
-        make_node(n, v2, Empty, s1)
-      }
+pub fn is_subset[N : BoundedEnum](s1 : Tree[N], s2 : Tree[N]) -> Bool {
+  match (s1, s2) {
+    (Empty, _) => true
+    (_, Empty) => false
+    (Node(..) as s1, Node(min=v1, max=v2, left=l2, right=r2, ..)) => {
+      let l1 = s1.slice_before(v1)
+      let r1 = s1.slice_after(v2)
+      is_subset(l1, l2) && is_subset(r1, r2)
     }
   }
 }

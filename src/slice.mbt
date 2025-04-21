@@ -1,5 +1,5 @@
 ///|
-fn slice_from[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn slice_from[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
   match self {
     Empty => Empty
     Node(..) as t =>
@@ -14,14 +14,14 @@ fn slice_from[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
 }
 
 ///|
-fn slice_util[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn slice_until[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
   match self {
     Empty => Empty
     Node(..) as t =>
       if x > t.max {
-        balance(t.min, t.max, t.left, slice_util(t.right, x))
+        balance(t.min, t.max, t.left, slice_until(t.right, x))
       } else if x < t.min {
-        slice_util(t.left, x)
+        slice_until(t.left, x)
       } else {
         balance(t.min, x, t.left, Empty)
       }
@@ -29,16 +29,16 @@ fn slice_util[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
 }
 
 ///|
-fn slice_before[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn slice_before[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
   if x == N::lower_bound() {
     Empty
   } else {
-    slice_util(self, N::pred(x))
+    slice_until(self, N::pred(x))
   }
 }
 
 ///|
-fn slice_after[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn slice_after[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
   if x == N::upper_bound() {
     Empty
   } else {
@@ -51,7 +51,7 @@ pub fn slice[N : BoundedEnum](self : Tree[N], min? : N, max? : N) -> Tree[N] {
   match (min, max) {
     (None, None) => panic()
     (Some(min), None) => slice_from(self, min)
-    (None, Some(max)) => slice_util(self, max)
-    (Some(min), Some(max)) => slice_util(slice_from(self, min), max)
+    (None, Some(max)) => slice_until(self, max)
+    (Some(min), Some(max)) => slice_until(slice_from(self, min), max)
   }
 }
