@@ -12,9 +12,9 @@ pub fn contains[N : BoundedEnum](self : Tree[N], x : N) -> Bool {
     Empty => false
     Node(..) as t =>
       if x < t.min {
-        contains(t.left, x)
+        t.left.contains(x)
       } else if x > t.max {
-        contains(t.right, x)
+        t.right.contains(x)
       } else {
         true
       }
@@ -22,8 +22,8 @@ pub fn contains[N : BoundedEnum](self : Tree[N], x : N) -> Bool {
 }
 
 ///|
-pub fn union[N : BoundedEnum](t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
-  match (t1, t2) {
+pub fn union[N : BoundedEnum](self : Tree[N], t2 : Tree[N]) -> Tree[N] {
+  match (self, t2) {
     (Empty, Empty) => Empty
     (Empty, Node(..) as t) | (Node(..) as t, Empty) => t
     (Node(..) as t1, Node(..) as t2) => {
@@ -77,8 +77,8 @@ fn union_aux[N : BoundedEnum](t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
 }
 
 ///|
-pub fn intersection[N : BoundedEnum](t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
-  match (t1, t2) {
+pub fn intersection[N : BoundedEnum](self : Tree[N], t2 : Tree[N]) -> Tree[N] {
+  match (self, t2) {
     (Empty, _) | (_, Empty) => Empty
     (Node(..) as t1, Node(..) as t2) => {
       let (t1, t2) = if t1.size >= t2.size { (t1, t2) } else { (t2, t1) }
@@ -107,11 +107,7 @@ pub fn complement[N : BoundedEnum](self : Tree[N]) -> Tree[N] {
 }
 
 ///|
-fn complement_aux[N : BoundedEnum](
-  min : N,
-  max : N,
-  t : Tree[N]
-) -> Tree[N] {
+fn complement_aux[N : BoundedEnum](min : N, max : N, t : Tree[N]) -> Tree[N] {
   match t {
     Empty => interval(min, max)
     Node(..) as t => {
@@ -132,5 +128,34 @@ fn complement_aux[N : BoundedEnum](
 
 ///|
 pub fn difference[N : BoundedEnum](t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
-  intersection(t1, t2.complement())
+  t1.intersection(t2.complement())
+}
+
+///|
+pub fn add[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
+  guard not(self.is_empty()) else { make_node(n, n, Empty, Empty) }
+  guard self is (Node(min=v1, max=v2, left=s0, right=s1, ..) as s)
+  if v1 != N::lower_bound() && n < N::pred(v1) {
+    make_node(v1, v2, s0.add(n), s1)
+  } else if v2 != N::upper_bound() && n > N::succ(v2) {
+    make_node(v1, v2, s0, s1.add(n))
+  } else if N::succ(n) == v1 {
+    guard not(s0.is_empty()) else { make_node(n, v2, s0, s1) }
+    let ((u1, u2), s0_prime) = split_rightmost(s0)
+    if u2 != N::upper_bound() && N::succ(u2) == n {
+      make_node(u1, v2, s0_prime, s1)
+    } else {
+      make_node(n, v2, s0, s1)
+    }
+  } else if N::succ(v2) == n {
+    guard not(s1.is_empty()) else { make_node(v1, n, s0, s1) }
+    let ((u1, u2), s1_prime) = split_leftmost(s1)
+    if n != N::upper_bound() && N::succ(n) == u1 {
+      make_node(v1, u2, s0, s1_prime)
+    } else {
+      make_node(v1, n, s0, s1)
+    }
+  } else {
+    s
+  }
 }
