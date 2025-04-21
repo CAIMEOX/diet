@@ -162,3 +162,15 @@ test "difference" {
     content="['0', '1', '2', '7', '8', '9']",
   )
 }
+
+test "add" {
+  let a : @diet.T[Int] = @diet.empty()
+  let b = a.add(1)
+  let c = b.add(10)
+  let x = @diet.interval(4, 8)
+  let y = @diet.union(c, x)
+  let z= y.add(5)
+  inspect!(c.iter().to_array(), content="[1, 10]")
+  inspect!(y.iter().to_array(), content="[1, 4, 5, 6, 7, 8, 10]")
+  inspect!(z.iter().to_array(), content="[1, 4, 5, 6, 7, 8, 10]")
+}

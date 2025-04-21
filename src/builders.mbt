@@ -15,9 +15,5 @@ pub fn interval[N](min : N, max : N) -> Tree[N] {
 
 ///|
 pub fn of[N : BoundedEnum](array : Array[N]) -> Tree[N] {
-  let mut t = Empty
-  for x in array {
-    t = union(t, singleton(x))
-  }
-  t
+  array.fold(init=Empty, fn { tree, x => union(tree, singleton(x)) })
 }

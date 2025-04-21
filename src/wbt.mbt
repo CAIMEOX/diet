@@ -1,7 +1,7 @@
 ///|
 const DELTA = 3
 
-///|
+///| Gamma
 const RATIO = 2
 
 ///|
