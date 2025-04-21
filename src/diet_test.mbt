@@ -174,3 +174,63 @@ test "add" {
   inspect!(y.iter().to_array(), content="[1, 4, 5, 6, 7, 8, 10]")
   inspect!(z.iter().to_array(), content="[1, 4, 5, 6, 7, 8, 10]")
 }
+
+///|
+test "until empty" {
+  let empty : @diet.T[Char] = @diet.empty()
+  let result : @diet.T[Char] = @diet.until(empty, '5')
+  inspect!(result.iter().to_array(), content="[]")
+}
+
+///|
+test "until - value not in tree" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.until(a, '0')  // '0' comes before 'a'
+  inspect!(result.iter().to_array(), content="[]")
+}
+
+///|
+test "until - value in interval" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.until(a, 'c')
+  inspect!(result.iter().to_array(), content="['a', 'b', 'c']")
+}
+
+///|
+test "until - value equal to max" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.until(a, 'e')
+  inspect!(result.iter().to_array(), content="['a', 'b', 'c', 'd', 'e']")
+}
+
+///|
+test "until - value after interval" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.until(a, 'z')
+  inspect!(result.iter().to_array(), content="['a', 'b', 'c', 'd', 'e']")
+}
+
+///|
+test "until - multiple intervals" {
+  let a : @diet.T[Char] = @diet.union(
+    @diet.interval('a', 'c'),
+    @diet.interval('g', 'i')
+  )
+  let result1 : @diet.T[Char] = @diet.until(a, 'b')
+  let result2 : @diet.T[Char] = @diet.until(a, 'd')
+  let result3 : @diet.T[Char] = @diet.until(a, 'h')
+  
+  inspect!(result1.iter().to_array(), content="['a', 'b']")
+  inspect!(result2.iter().to_array(), content="['a', 'b', 'c']")
+  inspect!(result3.iter().to_array(), content="['a', 'b', 'c', 'g', 'h']")
+}
+
+///|
+test "until - with integers" {
+  let a : @diet.T[Int] = @diet.union(
+    @diet.interval(1, 5),
+    @diet.interval(10, 15)
+  )
+  let result : @diet.T[Int] = @diet.until(a, 12)
+  inspect!(result.iter().to_array(), content="[1, 2, 3, 4, 5, 10, 11, 12]")
+}
