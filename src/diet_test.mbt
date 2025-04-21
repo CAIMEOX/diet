@@ -496,3 +496,49 @@ test "subset - with integers" {
   let result = @diet.is_subset(a, b)
   inspect!(result, content="true") // 2-4,10-11 is subset of 1-5,8-12
 }
+
+///|
+test "fold - empty tree" {
+  let empty : @diet.T[Int] = @diet.empty()
+
+  // Sum of interval lengths (should be 0)
+  let count = empty
+    .iter_intervals()
+    .fold(init=0, fn(acc, mm) {
+      let (min, max) = mm
+      acc + max - min + 1
+    })
+  inspect!(count, content="0")
+}
+
+///|
+test "fold - singleton tree" {
+  let singleton : @diet.T[Int] = @diet.singleton('x')
+
+  // Sum of interval lengths (should be 1)
+  let count = @diet.fold_ranges(singleton, init=0, fn(acc, min, max) {
+    acc + (max - min + 1)
+  })
+  inspect!(count, content="1")
+}
+
+///|
+test "fold - single interval" {
+  let interval : @diet.T[Int] = @diet.interval(1, 4)
+
+  // Sum of interval lengths
+  let count = @diet.fold_ranges(interval, init=0, fn(acc, min, max) {
+    acc + (max - min) + 1
+  })
+
+  // Collecting intervals as strings
+  let intervals = @diet.fold_ranges(interval, init="", fn(acc, min, max) {
+    if acc == "" {
+      "\{min}-\{max}"
+    } else {
+      acc + ", \{min}-\{max}"
+    }
+  })
+  inspect!(count, content="3")
+  inspect!(intervals, content="1-4")
+}

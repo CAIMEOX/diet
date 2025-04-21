@@ -197,3 +197,13 @@ pub fn is_subset[N : BoundedEnum](s1 : Tree[N], s2 : Tree[N]) -> Bool {
     }
   }
 }
+
+///|
+pub fn fold_ranges[N : BoundedEnum, A](
+  self : Tree[N],
+  init~ : A,
+  f : (A, N, N) -> A
+) -> A {
+  self.iter_intervals().fold(init~, fn { acc, (min, max) => f(acc, min, max) })
+}
+
