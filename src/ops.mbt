@@ -175,3 +175,19 @@ pub fn until[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
     }
   }
 }
+
+///|
+pub fn from[N : BoundedEnum](self : Tree[N], n : N) -> Tree[N] {
+  match self {
+    Empty => Empty
+    Node(min=v1, max=v2, left=s0, right=s1, ..) => {
+      if n < v1 {
+        make_node(v1, v2, s0.from(n), s1)
+      } else if n > v2 {
+        s1.from(n)
+      } else {
+        make_node(n, v2, Empty, s1)
+      }
+    }
+  }
+}

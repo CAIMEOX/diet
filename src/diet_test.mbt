@@ -234,3 +234,76 @@ test "until - with integers" {
   let result : @diet.T[Int] = @diet.until(a, 12)
   inspect!(result.iter().to_array(), content="[1, 2, 3, 4, 5, 10, 11, 12]")
 }
+
+///|
+test "from empty" {
+  let empty : @diet.T[Char] = @diet.empty()
+  let result : @diet.T[Char] = @diet.from(empty, '5')
+  inspect!(result.iter().to_array(), content="[]")
+}
+
+///|
+test "from - value not in tree" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.from(a, 'z')  // 'z' comes after 'e'
+  inspect!(result.iter().to_array(), content="[]")
+}
+
+///|
+test "from - value in interval" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.from(a, 'c')
+  inspect!(result.iter().to_array(), content="['c', 'd', 'e']")
+}
+
+///|
+test "from - value equal to min" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.from(a, 'a')
+  inspect!(result.iter().to_array(), content="['a', 'b', 'c', 'd', 'e']")
+}
+
+///|
+test "from - value before interval" {
+  let a : @diet.T[Char] = @diet.interval('a', 'e')
+  let result : @diet.T[Char] = @diet.from(a, '0')
+  inspect!(result.iter().to_array(), content="['a', 'b', 'c', 'd', 'e']")
+}
+
+///|
+test "from - multiple intervals" {
+  let a : @diet.T[Char] = @diet.union(
+    @diet.interval('a', 'c'),
+    @diet.interval('g', 'i')
+  )
+  let result1 : @diet.T[Char] = @diet.from(a, 'b')
+  let result2 : @diet.T[Char] = @diet.from(a, 'd')
+  let result3 : @diet.T[Char] = @diet.from(a, 'h')
+  
+  inspect!(result1.iter().to_array(), content="['b', 'c', 'g', 'h', 'i']")
+  inspect!(result2.iter().to_array(), content="['g', 'h', 'i']")
+  inspect!(result3.iter().to_array(), content="['h', 'i']")
+}
+
+///|
+test "from - with integers" {
+  let a : @diet.T[Int] = @diet.union(
+    @diet.interval(1, 5),
+    @diet.interval(10, 15)
+  )
+  let result : @diet.T[Int] = @diet.from(a, 3)
+  inspect!(result.iter().to_array(), content="[3, 4, 5, 10, 11, 12, 13, 14, 15]")
+}
+
+///|
+test "from and until combined" {
+  let a : @diet.T[Char] = @diet.interval('a', 'z')
+  let from_m : @diet.T[Char] = @diet.from(a, 'm')
+  let until_t : @diet.T[Char] = @diet.until(from_m, 't')
+  
+  // Should contain characters from 'm' to 't'
+  inspect!(
+    until_t.iter().to_array(), 
+    content="['m', 'n', 'o', 'p', 'q', 'r', 's', 't']"
+  )
+}
