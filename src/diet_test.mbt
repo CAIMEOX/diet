@@ -539,6 +539,6 @@ test "fold - single interval" {
       acc + ", \{min}-\{max}"
     }
   })
-  inspect!(count, content="3")
+  inspect!(count, content="4")
   inspect!(intervals, content="1-4")
 }

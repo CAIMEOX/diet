@@ -1,4 +1,4 @@
-///|
+///| Create a new iterator over intervals
 pub fn iter_intervals[N](self : Tree[N]) -> Iter[(N, N)] {
   Iter::new(fn(yield_) {
     match self {
@@ -17,7 +17,7 @@ pub fn iter_intervals[N](self : Tree[N]) -> Iter[(N, N)] {
   })
 }
 
-///|
+///| Create a new iterator over the elements represent by the tree
 pub fn iter[N : BoundedEnum](self : Tree[N]) -> Iter[N] {
   self
   .iter_intervals()

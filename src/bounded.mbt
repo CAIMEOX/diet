@@ -1,3 +1,4 @@
+///|
 pub(open) trait BoundedEnum: Compare {
   pred(Self) -> Self
   succ(Self) -> Self
