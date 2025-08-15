@@ -1,76 +1,47 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "CAIMEOX/diet"
 
 // Values
-fn add[N : BoundedEnum](Tree[N], N) -> Tree[N]
+fn[N : BoundedEnum] difference(Tree[N], Tree[N]) -> Tree[N]
 
-fn complement[N : BoundedEnum](Tree[N]) -> Tree[N]
+fn[N] empty() -> Tree[N]
 
-fn contains[N : BoundedEnum](Tree[N], N) -> Bool
+fn[N] interval(N, N) -> Tree[N]
 
-fn difference[N : BoundedEnum](Tree[N], Tree[N]) -> Tree[N]
+fn[N : BoundedEnum] is_subset(Tree[N], Tree[N]) -> Bool
 
-fn empty[N]() -> Tree[N]
+fn[N : BoundedEnum] of(Array[N]) -> Tree[N]
 
-fn fold_ranges[N : BoundedEnum, A](Tree[N], init~ : A, (A, N, N) -> A) -> A
+fn[N : BoundedEnum] of_view(ArrayView[N]) -> Tree[N]
 
-fn intersection[N : BoundedEnum](Tree[N], Tree[N]) -> Tree[N]
+fn[N] singleton(N) -> Tree[N]
 
-fn interval[N](N, N) -> Tree[N]
-
-fn is_empty[N](Tree[N]) -> Bool
-
-fn is_subset[N : BoundedEnum](Tree[N], Tree[N]) -> Bool
-
-fn iter[N : BoundedEnum](Tree[N]) -> Iter[N]
-
-fn iter_intervals[N](Tree[N]) -> Iter[(N, N)]
-
-fn of[N : BoundedEnum](Array[N]) -> Tree[N]
-
-fn of_view[N : BoundedEnum](ArrayView[N]) -> Tree[N]
-
-fn remove[N : BoundedEnum](Tree[N], N) -> Tree[N]
-
-fn singleton[N](N) -> Tree[N]
-
-fn slice[N : BoundedEnum](Tree[N], min? : N, max? : N) -> Tree[N]
-
-fn slice_after[N : BoundedEnum](Tree[N], N) -> Tree[N]
-
-fn slice_before[N : BoundedEnum](Tree[N], N) -> Tree[N]
-
-fn slice_from[N : BoundedEnum](Tree[N], N) -> Tree[N]
-
-fn slice_until[N : BoundedEnum](Tree[N], N) -> Tree[N]
-
-fn union[N : BoundedEnum](Tree[N], Tree[N]) -> Tree[N]
+// Errors
 
 // Types and methods
 type Tree[T]
-impl Tree {
-  add[N : BoundedEnum](Self[N], N) -> Self[N]
-  complement[N : BoundedEnum](Self[N]) -> Self[N]
-  contains[N : BoundedEnum](Self[N], N) -> Bool
-  fold_ranges[N : BoundedEnum, A](Self[N], init~ : A, (A, N, N) -> A) -> A
-  intersection[N : BoundedEnum](Self[N], Self[N]) -> Self[N]
-  is_empty[N](Self[N]) -> Bool
-  iter[N : BoundedEnum](Self[N]) -> Iter[N]
-  iter_intervals[N](Self[N]) -> Iter[(N, N)]
-  remove[N : BoundedEnum](Self[N], N) -> Self[N]
-  slice[N : BoundedEnum](Self[N], min? : N, max? : N) -> Self[N]
-  slice_after[N : BoundedEnum](Self[N], N) -> Self[N]
-  slice_before[N : BoundedEnum](Self[N], N) -> Self[N]
-  slice_from[N : BoundedEnum](Self[N], N) -> Self[N]
-  slice_until[N : BoundedEnum](Self[N], N) -> Self[N]
-  union[N : BoundedEnum](Self[N], Self[N]) -> Self[N]
-}
+fn[N : BoundedEnum] Tree::add(Self[N], N) -> Self[N]
+fn[N : BoundedEnum] Tree::complement(Self[N]) -> Self[N]
+fn[N : BoundedEnum] Tree::contains(Self[N], N) -> Bool
+fn[N : BoundedEnum, A] Tree::fold_ranges(Self[N], init~ : A, (A, N, N) -> A) -> A
+fn[N : BoundedEnum] Tree::intersection(Self[N], Self[N]) -> Self[N]
+fn[N] Tree::is_empty(Self[N]) -> Bool
+fn[N : BoundedEnum] Tree::iter(Self[N]) -> Iter[N]
+fn[N] Tree::iter_intervals(Self[N]) -> Iter[(N, N)]
+fn[N : BoundedEnum] Tree::remove(Self[N], N) -> Self[N]
+fn[N : BoundedEnum] Tree::slice(Self[N], min? : N, max? : N) -> Self[N]
+fn[N : BoundedEnum] Tree::slice_after(Self[N], N) -> Self[N]
+fn[N : BoundedEnum] Tree::slice_before(Self[N], N) -> Self[N]
+fn[N : BoundedEnum] Tree::slice_from(Self[N], N) -> Self[N]
+fn[N : BoundedEnum] Tree::slice_until(Self[N], N) -> Self[N]
+fn[N : BoundedEnum] Tree::union(Self[N], Self[N]) -> Self[N]
 impl[N : Compare] Compare for Tree[N]
 impl[N] Default for Tree[N]
 impl[N : Eq] Eq for Tree[N]
 impl[N : Hash] Hash for Tree[N]
 
 // Type aliases
-pub typealias T[T] = Tree[T]
+pub typealias Tree as T
 
 // Traits
 pub(open) trait BoundedEnum : Compare {
