@@ -15,10 +15,10 @@ pub fn[N] interval(min : N, max : N) -> Tree[N] {
 
 ///| Converts an array of elements into a tree
 pub fn[N : BoundedEnum] of(array : Array[N]) -> Tree[N] {
-  array.fold(init=Empty, fn { tree, x => union(tree, singleton(x)) })
+  array.fold(init=Empty, fn(tree, x) { tree.union(singleton(x)) })
 }
 
 ///| Converts an array view into a tree
 pub fn[N : BoundedEnum] of_view(view : ArrayView[N]) -> Tree[N] {
-  view.fold(init=Empty, fn { tree, x => union(tree, singleton(x)) })
+  view.fold(init=Empty, fn(tree, x) { tree.union(singleton(x)) })
 }

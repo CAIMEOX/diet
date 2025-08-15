@@ -3,7 +3,9 @@ priv struct InorderIterator[N](Array[Tree[N]])
 
 ///|
 fn[N] InorderIterator::new(root : T[N]) -> InorderIterator[N] {
-  InorderIterator([])..move_left(root)
+  let iter = InorderIterator([])
+  iter..move_left(root)
+  iter
 }
 
 ///|

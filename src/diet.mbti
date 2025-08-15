@@ -23,7 +23,7 @@ type Tree[T]
 fn[N : BoundedEnum] Tree::add(Self[N], N) -> Self[N]
 fn[N : BoundedEnum] Tree::complement(Self[N]) -> Self[N]
 fn[N : BoundedEnum] Tree::contains(Self[N], N) -> Bool
-fn[N : BoundedEnum, A] Tree::fold_ranges(Self[N], init~ : A, (A, N, N) -> A) -> A
+fn[N, A] Tree::fold_ranges(Self[N], init~ : A, (A, N, N) -> A) -> A
 fn[N : BoundedEnum] Tree::intersection(Self[N], Self[N]) -> Self[N]
 fn[N] Tree::is_empty(Self[N]) -> Bool
 fn[N : BoundedEnum] Tree::iter(Self[N]) -> Iter[N]

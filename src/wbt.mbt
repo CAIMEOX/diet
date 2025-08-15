@@ -14,7 +14,7 @@ fn[N] size(self : Tree[N]) -> Int {
 
 ///|
 fn[N] make_node(min : N, max : N, l : Tree[N], r : Tree[N]) -> Tree[N] {
-  let size = size(l) + size(r) + 1
+  let size = l.size() + r.size() + 1
   Node(left=l, right=r, size~, min~, max~)
 }
 

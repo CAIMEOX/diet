@@ -44,7 +44,7 @@ fn[N : BoundedEnum] union_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   let (min, l) = if t1.min == N::lower_bound() {
     (t1.min, Empty)
   } else {
-    let l = union(l1, l2)
+    let l = l1.union(l2)
     match l {
       Empty => (t1.min, Empty)
       Node(_) => {
@@ -60,7 +60,7 @@ fn[N : BoundedEnum] union_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   let (max, r) = if t1.max == N::upper_bound() {
     (t1.max, Empty)
   } else {
-    let r = union(r1, r2)
+    let r = r1.union(r2)
     match r {
       Empty => (t1.max, Empty)
       Node(_) => {
@@ -95,8 +95,8 @@ fn[N : BoundedEnum] intersection_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   let r1 = t1.right
   let l2 = t2.slice_before(t1.min)
   let r2 = t2.slice_after(t1.max)
-  let l = intersection(l1, l2)
-  let r = intersection(r1, r2)
+  let l = l1.intersection(l2)
+  let r = r1.intersection(r2)
   let m = t2.slice(min=t1.min, max=t1.max)
   concat(concat(l, m), r)
 }
@@ -199,10 +199,11 @@ pub fn[N : BoundedEnum] is_subset(s1 : Tree[N], s2 : Tree[N]) -> Bool {
 }
 
 ///| Applies a function to each interval in the tree and accumulates the results.
-pub fn[N : BoundedEnum, A] fold_ranges(
-  self : Tree[N],
-  init~ : A,
-  f : (A, N, N) -> A,
-) -> A {
-  self.iter_intervals().fold(init~, fn { acc, (min, max) => f(acc, min, max) })
+pub fn[N, A] fold_ranges(self : Tree[N], init~ : A, f : (A, N, N) -> A) -> A {
+  self
+  .iter_intervals()
+  .fold(init~, fn(acc, interval) {
+    let (min, max) = interval
+    f(acc, min, max)
+  })
 }
