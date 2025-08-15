@@ -1,5 +1,5 @@
 ///| Create a new iterator over intervals
-pub fn iter_intervals[N](self : Tree[N]) -> Iter[(N, N)] {
+pub fn[N] iter_intervals(self : Tree[N]) -> Iter[(N, N)] {
   Iter::new(fn(yield_) {
     match self {
       Empty => IterContinue
@@ -18,7 +18,7 @@ pub fn iter_intervals[N](self : Tree[N]) -> Iter[(N, N)] {
 }
 
 ///| Create a new iterator over the elements represent by the tree
-pub fn iter[N : BoundedEnum](self : Tree[N]) -> Iter[N] {
+pub fn[N : BoundedEnum] iter(self : Tree[N]) -> Iter[N] {
   self
   .iter_intervals()
   .flat_map(fn {
@@ -26,7 +26,6 @@ pub fn iter[N : BoundedEnum](self : Tree[N]) -> Iter[N] {
       Iter::new(fn(yield_) {
         for x = min; x <= max; x = N::succ(x) {
           guard yield_(x) is IterContinue else { return IterEnd }
-
         }
         IterContinue
       })
