@@ -1,21 +1,21 @@
 ///|
 pub impl BoundedEnum for Char with pred(self) {
-  Char::from_int(self.to_int() - 1)
+  (self.to_int() - 1).unsafe_to_char()
 }
 
 ///|
 pub impl BoundedEnum for Char with succ(self) {
-  Char::from_int(self.to_int() + 1)
+  (self.to_int() + 1).unsafe_to_char()
 }
 
 ///|
 pub impl BoundedEnum for Char with lower_bound() {
-  Char::from_int(0)
+  Int::unsafe_to_char(0)
 }
 
 ///|
 pub impl BoundedEnum for Char with upper_bound() {
-  Char::from_int(0x10ffff)
+  Int::unsafe_to_char(0x10ffff)
 }
 
 ///|

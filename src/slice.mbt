@@ -1,12 +1,12 @@
 ///| Returns a tree containing all elements greater than or equal to x.
-pub fn slice_from[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn[N : BoundedEnum] slice_from(self : Tree[N], x : N) -> Tree[N] {
   match self {
     Empty => Empty
     Node(..) as t =>
       if x < t.min {
-        balance(t.min, t.max, slice_from(t.left, x), t.right)
+        balance(t.min, t.max, t.left.slice_from(x), t.right)
       } else if x > t.max {
-        slice_from(t.right, x)
+        t.right.slice_from(x)
       } else {
         balance(x, t.max, Empty, t.right)
       }
@@ -14,14 +14,14 @@ pub fn slice_from[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
 }
 
 ///| Returns a tree containing all elements less than or equal to x.
-pub fn slice_until[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn[N : BoundedEnum] slice_until(self : Tree[N], x : N) -> Tree[N] {
   match self {
     Empty => Empty
     Node(..) as t =>
       if x > t.max {
-        balance(t.min, t.max, t.left, slice_until(t.right, x))
+        balance(t.min, t.max, t.left, t.right.slice_until(x))
       } else if x < t.min {
-        slice_until(t.left, x)
+        t.left.slice_until(x)
       } else {
         balance(t.min, x, t.left, Empty)
       }
@@ -29,29 +29,29 @@ pub fn slice_until[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
 }
 
 ///| Returns a tree containing all elements strictly less than x.
-pub fn slice_before[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn[N : BoundedEnum] slice_before(self : Tree[N], x : N) -> Tree[N] {
   if x == N::lower_bound() {
     Empty
   } else {
-    slice_until(self, N::pred(x))
+    self.slice_until(N::pred(x))
   }
 }
 
 ///| Returns a tree containing all elements strictly greater than x.
-pub fn slice_after[N : BoundedEnum](self : Tree[N], x : N) -> Tree[N] {
+pub fn[N : BoundedEnum] slice_after(self : Tree[N], x : N) -> Tree[N] {
   if x == N::upper_bound() {
     Empty
   } else {
-    slice_from(self, N::succ(x))
+    self.slice_from(N::succ(x))
   }
 }
 
 ///| Returns a tree containing all elements within the specified range.
-pub fn slice[N : BoundedEnum](self : Tree[N], min? : N, max? : N) -> Tree[N] {
+pub fn[N : BoundedEnum] slice(self : Tree[N], min? : N, max? : N) -> Tree[N] {
   match (min, max) {
     (None, None) => panic()
-    (Some(min), None) => slice_from(self, min)
-    (None, Some(max)) => slice_until(self, max)
-    (Some(min), Some(max)) => slice_until(slice_from(self, min), max)
+    (Some(min), None) => self.slice_from(min)
+    (None, Some(max)) => self.slice_until(max)
+    (Some(min), Some(max)) => self.slice_from(min).slice_until(max)
   }
 }
