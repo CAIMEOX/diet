@@ -1,13 +1,15 @@
-///| Checks if a tree is empty.
-pub fn[N] is_empty(self : Tree[N]) -> Bool {
+///|
+/// Checks if a tree is empty.
+pub fn[N] Tree::is_empty(self : Tree[N]) -> Bool {
   match self {
     Empty => true
     Node(..) => false
   }
 }
 
-///| Determines if a discrete interval encoding tree contains a specific value.
-pub fn[N : BoundedEnum] contains(self : Tree[N], x : N) -> Bool {
+///|
+/// Determines if a discrete interval encoding tree contains a specific value.
+pub fn[N : BoundedEnum] Tree::contains(self : Tree[N], x : N) -> Bool {
   match self {
     Empty => false
     Node(..) as t =>
@@ -21,8 +23,9 @@ pub fn[N : BoundedEnum] contains(self : Tree[N], x : N) -> Bool {
   }
 }
 
-///| Computes the union of two discrete interval encoding trees.
-pub fn[N : BoundedEnum] union(self : Tree[N], t2 : Tree[N]) -> Tree[N] {
+///|
+/// Computes the union of two discrete interval encoding trees.
+pub fn[N : BoundedEnum] Tree::union(self : Tree[N], t2 : Tree[N]) -> Tree[N] {
   match (self, t2) {
     (Empty, Empty) => Empty
     (Empty, Node(..) as t) | (Node(..) as t, Empty) => t
@@ -33,7 +36,8 @@ pub fn[N : BoundedEnum] union(self : Tree[N], t2 : Tree[N]) -> Tree[N] {
   }
 }
 
-///| Helper function for computing the union of two non-empty trees.
+///|
+/// Helper function for computing the union of two non-empty trees.
 fn[N : BoundedEnum] union_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   guard t1 is (Node(..) as t1)
   guard t2 is (Node(..) as t2)
@@ -76,8 +80,12 @@ fn[N : BoundedEnum] union_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   balance(min, max, l, r)
 }
 
-///| Computes the intersection of two discrete interval encoding trees.
-pub fn[N : BoundedEnum] intersection(self : Tree[N], t2 : Tree[N]) -> Tree[N] {
+///|
+/// Computes the intersection of two discrete interval encoding trees.
+pub fn[N : BoundedEnum] Tree::intersection(
+  self : Tree[N],
+  t2 : Tree[N],
+) -> Tree[N] {
   match (self, t2) {
     (Empty, _) | (_, Empty) => Empty
     (Node(..) as t1, Node(..) as t2) => {
@@ -87,7 +95,8 @@ pub fn[N : BoundedEnum] intersection(self : Tree[N], t2 : Tree[N]) -> Tree[N] {
   }
 }
 
-///| Helper function for computing the intersection of two non-empty trees.
+///|
+/// Helper function for computing the intersection of two non-empty trees.
 fn[N : BoundedEnum] intersection_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   guard t1 is (Node(..) as t1)
   guard t2 is (Node(..) as t2)
@@ -101,12 +110,14 @@ fn[N : BoundedEnum] intersection_aux(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   concat(concat(l, m), r)
 }
 
-///| Computes the complement of a discrete interval encoding tree.
-pub fn[N : BoundedEnum] complement(self : Tree[N]) -> Tree[N] {
+///|
+/// Computes the complement of a discrete interval encoding tree.
+pub fn[N : BoundedEnum] Tree::complement(self : Tree[N]) -> Tree[N] {
   complement_aux(N::lower_bound(), N::upper_bound(), self)
 }
 
-///| Helper function for computing the complement of a tree within a range.
+///|
+/// Helper function for computing the complement of a tree within a range.
 fn[N : BoundedEnum] complement_aux(min : N, max : N, t : Tree[N]) -> Tree[N] {
   match t {
     Empty => interval(min, max)
@@ -126,13 +137,15 @@ fn[N : BoundedEnum] complement_aux(min : N, max : N, t : Tree[N]) -> Tree[N] {
   }
 }
 
-///| Computes the difference between two discrete interval encoding trees.
+///|
+/// Computes the difference between two discrete interval encoding trees.
 pub fn[N : BoundedEnum] difference(t1 : Tree[N], t2 : Tree[N]) -> Tree[N] {
   t1.intersection(t2.complement())
 }
 
-///| Adds a single value to a discrete interval encoding tree.
-pub fn[N : BoundedEnum] add(self : Tree[N], n : N) -> Tree[N] {
+///|
+/// Adds a single value to a discrete interval encoding tree.
+pub fn[N : BoundedEnum] Tree::add(self : Tree[N], n : N) -> Tree[N] {
   guard not(self.is_empty()) else { make_node(n, n, Empty, Empty) }
   guard self is (Node(min=v1, max=v2, left=s0, right=s1, ..) as s)
   if v1 != N::lower_bound() && n < N::pred(v1) {
@@ -160,8 +173,9 @@ pub fn[N : BoundedEnum] add(self : Tree[N], n : N) -> Tree[N] {
   }
 }
 
-///| Removes a single value from a discrete interval encoding tree.
-pub fn[N : BoundedEnum] remove(self : Tree[N], n : N) -> Tree[N] {
+///|
+/// Removes a single value from a discrete interval encoding tree.
+pub fn[N : BoundedEnum] Tree::remove(self : Tree[N], n : N) -> Tree[N] {
   match self {
     Empty => Empty
     Node(min=v1, max=v2, left=s1, right=s2, ..) =>
@@ -185,7 +199,8 @@ pub fn[N : BoundedEnum] remove(self : Tree[N], n : N) -> Tree[N] {
   }
 }
 
-///| Checks if one discrete interval encoding tree is a subset of another.
+///|
+/// Checks if one discrete interval encoding tree is a subset of another.
 pub fn[N : BoundedEnum] is_subset(s1 : Tree[N], s2 : Tree[N]) -> Bool {
   match (s1, s2) {
     (Empty, _) => true
@@ -198,8 +213,13 @@ pub fn[N : BoundedEnum] is_subset(s1 : Tree[N], s2 : Tree[N]) -> Bool {
   }
 }
 
-///| Applies a function to each interval in the tree and accumulates the results.
-pub fn[N, A] fold_ranges(self : Tree[N], init~ : A, f : (A, N, N) -> A) -> A {
+///|
+/// Applies a function to each interval in the tree and accumulates the results.
+pub fn[N, A] Tree::fold_ranges(
+  self : Tree[N],
+  init~ : A,
+  f : (A, N, N) -> A,
+) -> A {
   self
   .iter_intervals()
   .fold(init~, fn(acc, interval) {

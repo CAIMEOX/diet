@@ -19,6 +19,7 @@ fn[N] singleton(N) -> Tree[N]
 // Errors
 
 // Types and methods
+#alias(T)
 type Tree[T]
 fn[N : BoundedEnum] Tree::add(Self[N], N) -> Self[N]
 fn[N : BoundedEnum] Tree::complement(Self[N]) -> Self[N]
@@ -41,7 +42,6 @@ impl[N : Eq] Eq for Tree[N]
 impl[N : Hash] Hash for Tree[N]
 
 // Type aliases
-pub typealias Tree as T
 
 // Traits
 pub(open) trait BoundedEnum : Compare {

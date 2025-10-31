@@ -125,7 +125,7 @@ test "complement empty" {
   let complement : @diet.T[Char] = empty.complement()
   inspect(
     complement.iter_intervals().to_array(),
-    content="[('\\x00', '\u{10ffff}')]",
+    content="[('\\u{00}', '\\u{10ffff}')]",
   )
 }
 
@@ -135,7 +135,7 @@ test "complement single interval" {
   let complement : @diet.T[Char] = a.complement()
   inspect(
     complement.iter_intervals().to_array(),
-    content="[('\\x00', '/'), (':', '\u{10ffff}')]",
+    content="[('\\u{00}', '/'), (':', '\\u{10ffff}')]",
   )
 }
 
@@ -147,7 +147,7 @@ test "complement multiple intervals" {
   let complement : @diet.T[Char] = a.complement()
   inspect(
     complement.iter_intervals().to_array(),
-    content="[('\\x00', '/'), ('5', '5'), (':', '\u{10ffff}')]",
+    content="[('\\u{00}', '/'), ('5', '5'), (':', '\\u{10ffff}')]",
   )
 }
 
