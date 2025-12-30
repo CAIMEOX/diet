@@ -1,8 +1,6 @@
 ///|
-pub typealias Tree as T
-
-///|
-enum Tree[T] {
+#alias(T)
+pub(all) enum Tree[V] {
   Empty
-  Node(left~ : Tree[T], right~ : Tree[T], size~ : Int, min~ : T, max~ : T)
+  Node(left~ : Tree[V], right~ : Tree[V], size~ : Int, min~ : V, max~ : V)
 }
